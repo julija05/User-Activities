@@ -1,16 +1,15 @@
 <?php
 
 namespace App\Traits;
+use App\Models\Activity;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * This trait contains everything connected to hasMany(Event::class) relationship
- */
-trait HasActivitiesTrait
+trait HasActivities
 {
     /**
      * @return HasMany
      */
-    public function activities()
+    public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
     }
