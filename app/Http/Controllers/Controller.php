@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
 
 class Controller extends BaseController
 {
@@ -22,4 +23,5 @@ class Controller extends BaseController
     {
         return Inertia::render($templateName, $values);
     }
+
 }

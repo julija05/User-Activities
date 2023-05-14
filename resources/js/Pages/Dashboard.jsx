@@ -28,7 +28,7 @@ useEffect(() => {
             </div>
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <ActivityTable key={activities.length.toString()} activities={activities}/>
+                    <ActivityTable key={activities.length.toString()} activities={activities} />
                 </div>
             </div>
         </AuthenticatedLayout>

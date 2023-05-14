@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreActivityRequest extends FormRequest
+class StoreActivityReportRequest extends FormRequest
 {
 
     /**
@@ -15,9 +15,8 @@ class StoreActivityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'activityDateFrom' => 'required|date',
-            'activityTimeSpend' => 'required|string',
-            'activityDescription'=> 'required|string',
+            'activiyFilterDateFrom' => 'required|date',
+            'activiyFilterDateTo' => 'required|date',
         ];
     }
 }
