@@ -7,15 +7,30 @@ use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $startDate =  $request->query('startDate');
+        $endDate =  $request->query('endDate');
+        $activities;
+        if (is_null($startDate) && is_null($endDate)) {
+            // Return all activities
+            $activities = Activity::all();
+        } elseif (!is_null($startDate) && !is_null($endDate)) {
+            // Return activities between start and end date
+            $activities = Activity::whereBetween('activityDateFrom', [$startDate, $endDate])->get();
+        } else {
+            // Return error message
+            return response()->json(['error' => 'Both start date and end date are required.'], 400);
+        }
+    
+        return response()->json($activities, 200);
     }
 
     /**

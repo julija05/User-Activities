@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\SendMailController;
 use Inertia\Inertia;
 
 /*
@@ -17,6 +18,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [LandingController::class,'index'])->name('landing.index');
+Route::get('mail-send', [SendMailController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
