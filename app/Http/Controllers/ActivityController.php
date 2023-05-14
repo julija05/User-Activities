@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
+use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 
 class ActivityController extends Controller
 {
@@ -21,15 +23,19 @@ class ActivityController extends Controller
      */
     public function create()
     {
-        //
+        return $this->createView('Activities/CreateActivity', [
+            'status' => session('status'),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreActivityRequest $request)
-    {
-        //
+    {  
+        Activity::create($request->validated());
+
+        return Redirect::route('dashboard');
     }
 
     /**

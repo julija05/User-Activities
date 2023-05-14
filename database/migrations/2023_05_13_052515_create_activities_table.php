@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->date('activity-date');
-            $table->integer('time-spend');
-            $table->string('description');
+            $table->timestamp('activityDateFrom');
+            $table->string('activityTimeSpend');
+            $table->string('activityDescription');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
