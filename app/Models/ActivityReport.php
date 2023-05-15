@@ -23,5 +23,16 @@ class ActivityReport extends Model
         'activiyFilterDateFrom',
         'activiyFilterDateTo',
     ];
+    
+    public function getReport($id)
+    {
+        $report = ActivityReport::where('id', $id)->first();
+
+        if (!$report) {
+            return response()->json(['error' => 'Report not found'], 404); 
+        }
+
+        return $report;
+    }
 
 }

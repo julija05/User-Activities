@@ -1,16 +1,17 @@
 <?php
 
 namespace App\Models;
-
+use App\Traits\BelongsToUser;
+use App\Traits\ScopeFilters\ScopeFilterUserActivityBetweenTwoDates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToUser;
 
 class Activity extends Model
 {
     use HasFactory;
     use BelongsToUser;
-    public $table = "activities";
+    use ScopeFilterUserActivityBetweenTwoDates;
+
     protected $fillable = [
         'activityTimeSpend',
         'activityDateFrom',

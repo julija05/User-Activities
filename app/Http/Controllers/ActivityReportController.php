@@ -37,8 +37,9 @@ class ActivityReportController extends Controller
      */
     public function store(StoreActivityReportRequest $request)
     {
+        
         $activity= ActivityReport::create($request->validated());
-        Mail::to('addres@adress.com')->send(
+        Mail::to($request['sendUserEmai'])->send(
             new SendMail($activity)
         );    
         return Redirect::route('dashboard');
@@ -49,12 +50,8 @@ class ActivityReportController extends Controller
      */
     public function show(ActivityReport $activityReport, $id)
     {
-            $report = ActivityReport::where('id', $id)->first();
-        if (!$report) {
-            return response()->json(['error' => 'Report not found'], 404); 
-        }
-
-       $activities = Activity::where('user_id', $report["user_id"])->whereBetween('activityDateFrom', [$report["activiyFilterDateFrom"], $report["activiyFilterDateTo"]] )->get();
+       $activitiy = Activity::query();
+       $activities = $activitiy->filterUserActivityBetweenTwoDates($activityReport->getReport($id));
 
        return $this->createView('Report', [
             'activities' => $activities
