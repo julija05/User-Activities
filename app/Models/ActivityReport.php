@@ -23,4 +23,8 @@ class ActivityReport extends Model
         'activiyFilterDateFrom',
         'activiyFilterDateTo',
     ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
 }

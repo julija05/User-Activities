@@ -5,6 +5,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SendMailController;
 use App\Http\Controllers\ActivityReportController;
+use App\Http\Controllers\Api\ActivityApiController;
 use Inertia\Inertia;
 
 /*
@@ -34,5 +35,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('activities',ActivityController::class);
     Route::resource('activityReport',ActivityReportController::class)->except('show');
 });
+
+Route::as('api.v1')
+    ->prefix('api/v1')
+    ->namespace('Api')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('userActivities',[ActivityApiController::class,'index']);
+        Route::get('report',[ActivityApiController::class,'report']);
+    });
+
+
 
 require __DIR__.'/auth.php';

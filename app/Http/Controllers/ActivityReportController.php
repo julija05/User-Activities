@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\Models\Activity;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityReportController extends Controller
 {
@@ -17,7 +18,9 @@ class ActivityReportController extends Controller
      */
     public function index()
     {
-        //
+        return $this->createView('PrintReport', [
+            'status' => session('status')
+        ]);
     }
 
     /**
@@ -34,7 +37,7 @@ class ActivityReportController extends Controller
      */
     public function store(StoreActivityReportRequest $request)
     {
-        $request["user_id"] = Auth::id();
+        $request['user_id'] = Auth::id();
         $activity= ActivityReport::create($request->validated());
         Mail::to('addres@adress.com')->send(
             new SendMail($activity)

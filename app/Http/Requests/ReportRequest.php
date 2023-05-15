@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreActivityReportRequest extends FormRequest
+class ReportRequest extends FormRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,9 +14,7 @@ class StoreActivityReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'activiyFilterDateFrom' => 'required|date',
-            'activiyFilterDateTo' => 'required|date',
-            'user_id'=>'integer'
+            //
         ];
     }
 }

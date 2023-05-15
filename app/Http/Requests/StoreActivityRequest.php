@@ -18,6 +18,7 @@ class StoreActivityRequest extends FormRequest
             'activityDateFrom' => 'required|date',
             'activityTimeSpend' => 'required|string',
             'activityDescription'=> 'required|string',
+            'user_id'=>'integer'
         ];
     }
 }
