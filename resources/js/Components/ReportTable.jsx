@@ -20,8 +20,16 @@ function ReportTable(props) {
         reportDateFilterTo: '',
     });
 
+    function chekDates(dateFrom,dateTo){
+        if(dateTo < dateFrom){
+            errors.activiyFilterDateTo='Check the time range'
+            return errors.activiyFilterDateTo
+        }
+    }
 
-    function handleFilterClick() {
+    function handleFilterClick(e) {
+        e.preventDefault();
+        chekDates(data.reportDateFilterFrom,data.reportDateFilterTo)
         fetchActivities('/api/v1/report',moment(data.reportDateFilterFrom).format("yyyy-MM-DD"), moment(data.reportDateFilterTo).format("yyyy-MM-DD")).then(data => {
             // console.log(data,'data')
             setActivities(data)
@@ -30,6 +38,7 @@ function ReportTable(props) {
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <form onSubmit={handleFilterClick}>
             <div class=" sm:flex sm:flex-row">
                 <div className="py-2 ml-1">
                     <div className="">
@@ -40,7 +49,9 @@ function ReportTable(props) {
                             type="date"
                             value={data.reportDateFilterFrom}
                             onChange={(e) => setData('reportDateFilterFrom', e.target.value)}
+                            required
                         />
+                         {errors.reportDateFilterFrom && <div className='text-red-500 m-3'>{errors.reportDateFilterFrom}</div>}
                     </div>
                 </div>
                 <div className="py-2 ml-1">
@@ -52,13 +63,17 @@ function ReportTable(props) {
                             type="date"
                             value={data.reportDateFilterTo}
                             onChange={(e) => setData('reportDateFilterTo', e.target.value)}
+                            required
                         />
+                         {errors.reportDateFilterTo && <div className='text-red-500 m-3'>{errors.reportDateFilterTo}</div>}
                     </div>
                 </div>
                 <div className="self-center m-5 pt-3">
-                    <DangerButton onClick={handleFilterClick}>Filter</DangerButton>
+                    <DangerButton >Filter</DangerButton>
                 </div>
             </div>
+                </form>
+
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

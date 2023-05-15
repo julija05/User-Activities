@@ -20,9 +20,21 @@ function ActivityTable(props) {
     const [state, setState] = useState({
         activities: activities,
     });
+    
+    function chekDates(dateFrom,dateTo){
+        if(dateTo < dateFrom){
+            errors.activiyFilterDateTo='Check the time range'
+            return errors.activiyFilterDateTo
+        }
+    }
 
 
-    function handleFilterClick() {
+    function handleFilterClick(e) {
+        e.preventDefault();
+        if(!data.activiyFilterDateFrom || !data.activiyFilterDateTo){
+           return errors.activiyFilterDateFrom = 'Both dates are required'
+        }
+        chekDates(data.activiyFilterDateFrom,data.activiyFilterDateTo);
         fetchActivities("/api/v1/userActivities",moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
             // console.log(data,'data')
             setState({
@@ -34,12 +46,16 @@ function ActivityTable(props) {
 
     function handleSendReport(e) {
         e.preventDefault();
+        if(!data.sendUserEmail){
+           return errors.sendUserEmail='Email is requred';
+        }
         post(route('activityReport.store'));
     }
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             {!props.report &&
+            <form onSubmit={handleFilterClick}>
                 <div class=" sm:flex sm:flex-row">
                     <div className="py-2 ml-1">
                         <div className="">
@@ -53,6 +69,7 @@ function ActivityTable(props) {
                                 required
                             />
                         </div>
+                             
                     </div>
                     <div className="py-2 ml-1">
                         <div className="">
@@ -63,13 +80,20 @@ function ActivityTable(props) {
                                 type="date"
                                 value={data.activiyFilterDateTo}
                                 onChange={(e) => setData('activiyFilterDateTo', e.target.value)}
+                                required
                             />
+                           
                         </div>
                     </div>
                     <div className="self-center m-5 pt-3">
-                        <DangerButton onClick={handleFilterClick}>Filter</DangerButton>
+                        <DangerButton>Filter</DangerButton>
                     </div>
                 </div>
+                <div className='sm:flex sm:flex-row'>
+                {errors.activiyFilterDateFrom && <div className='text-red-500 m-3'>{errors.activiyFilterDateFrom}</div>}
+                    {errors.activiyFilterDateTo && <div className='text-red-500 m-3'>{errors.activiyFilterDateTo}</div>}
+                </div>
+                </form>
             }
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -130,8 +154,9 @@ function ActivityTable(props) {
                                 className="ml-2"
                                 isFocused={true}
                                 onChange={(e) => setData('sendUserEmail', e.target.value)}
-                                required />
+                                required /> 
                         </div>
+                            {errors.sendUserEmail && <div className='text-red-500 m-3'>{errors.sendUserEmail}</div>}
                         <PrimaryButton className="ml-2 ">Send Report</PrimaryButton>
                     </div>
                 </form>

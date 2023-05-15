@@ -2,7 +2,6 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { router } from '@inertiajs/core';
 import { Head, useForm } from '@inertiajs/react';
 import moment from 'moment';
 
@@ -46,28 +45,31 @@ export default function CreateActivity({ auth }) {
                      type="date"
                      value={data.activityDateFrom}
                      onChange={(e) => setData('activityDateFrom', e.target.value)}
+                     required
                     />
                     </div>
                 </div>
+                {errors.activityDateFrom && <div className='text-red-500 m-3'>{errors.activityDateFrom}</div>}
                 <div className="py-12 m-4">
                     <div className="">
                     <InputLabel htmlFor="date" value="Time Spend" /> 
                     <input 
+                     name='activityTimeSpend'
                      id="activityTimeSpend"
                      type="time"
                      value={data.activityTimeSpend}
                      onChange={(e) => setData('activityTimeSpend', e.target.value)}
+                     required
                     />
                     </div>
                 </div>    
             </div>
-            <div class=" sm:flex sm:flex-col sm:justify-center sm:items-center">
-            <InputLabel htmlFor="date" value="Description" />    
-            <TextInput
-             id="activityDescription"
-             value={data.activityDescription}
-             onChange={(e) => setData('activityDescription', e.target.value)}
-             />
+            {errors.activityTimeSpend && <div className='text-red-500 m-3'>{errors.activityTimeSpend}</div>}
+            <div class=" w- sm:flex sm:flex-col sm:justify-center sm:items-center">
+            <InputLabel htmlFor="date" value="Description" /> 
+            <textarea id="activityDescription" value={data.activityDescription} maxLength={50}
+             required  onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="4" class="block p-2.5  max-w-md text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:50)..."></textarea>   
+            {errors.activityDescription && <div className='text-red-500 m-3'>{errors.activityDescription}</div>}
             <PrimaryButton className='mt-5'>Create</PrimaryButton>
             </div>
             </form>  
