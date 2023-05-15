@@ -2,6 +2,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { router } from '@inertiajs/core';
 import { Head, useForm } from '@inertiajs/react';
 import moment from 'moment';
 
@@ -13,11 +14,13 @@ export default function CreateActivity({ auth }) {
         activityDescription: '',
         user_id: auth.user.id,
     });
+    
 
     const submit = (e) => {
         e.preventDefault();
         data.activityDateFrom= moment(data.activityDateFrom).format("yyyy-MM-DD");
         post(route('activities.store'));
+        
     };
     return (
         <AuthenticatedLayout

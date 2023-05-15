@@ -17,7 +17,6 @@ class ActivityController extends Controller
      */
     public function index(Request $request)
     {
-
         $startDate =  $request->query('startDate');
         $endDate =  $request->query('endDate');
         $activities;
@@ -51,7 +50,6 @@ class ActivityController extends Controller
     public function store(StoreActivityRequest $request)
     {  
         Activity::create($request->validated());
-
         return Redirect::route('dashboard');
     }
 

@@ -37,7 +37,6 @@ class ActivityReportController extends Controller
      */
     public function store(StoreActivityReportRequest $request)
     {
-        $request['user_id'] = Auth::id();
         $activity= ActivityReport::create($request->validated());
         Mail::to('addres@adress.com')->send(
             new SendMail($activity)

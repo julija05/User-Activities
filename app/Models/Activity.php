@@ -10,12 +10,12 @@ class Activity extends Model
 {
     use HasFactory;
     use BelongsToUser;
-
+    public $table = "activities";
     protected $fillable = [
         'activityTimeSpend',
         'activityDateFrom',
         'activityDescription',
-        'user_id'
+        'user_id',
     ];
 
     protected $dates = [

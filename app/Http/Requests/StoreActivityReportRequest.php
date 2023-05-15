@@ -17,7 +17,14 @@ class StoreActivityReportRequest extends FormRequest
         return [
             'activiyFilterDateFrom' => 'required|date',
             'activiyFilterDateTo' => 'required|date',
-            'user_id'=>'integer'
+            'user_id'=>'required|integer'
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id'=>auth()->user()->id,
+        ]);
+       
     }
 }

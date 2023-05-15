@@ -7,6 +7,7 @@ import { fetchActivities } from "@/api/fetchActivities";
 import { useState } from "react";
 import moment from 'moment';
 import TextInput from "./TextInput";
+import { router } from "@inertiajs/core";
 
 function ActivityTable(props) {
     const { activities } = props;
@@ -22,7 +23,7 @@ function ActivityTable(props) {
 
 
     function handleFilterClick() {
-        fetchActivities(moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
+        fetchActivities("/api/v1/userActivities",moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
             // console.log(data,'data')
             setState({
                 ...state,

@@ -9,7 +9,7 @@ export default function Dashboard({ auth }) {
 const [activities, setActivities] = useState([]);
 
 useEffect(() => {
-    fetchActivities("").then(data => setActivities(data));
+    fetchActivities().then(data => setActivities(data));
   }, []);
  
     return (

@@ -12,11 +12,11 @@ class ActivityReport extends Model
     use HasFactory;
     use HasUuids;
     use BelongsToUser;
-
+    public $table = "activity_reports";
     protected $fillable = [
         'activiyFilterDateFrom',
         'activiyFilterDateTo',
-        'user_id'
+        'user_id',
     ];
 
     protected $dates = [
@@ -24,7 +24,4 @@ class ActivityReport extends Model
         'activiyFilterDateTo',
     ];
 
-    protected $casts = [
-        'user_id' => 'integer',
-    ];
 }
