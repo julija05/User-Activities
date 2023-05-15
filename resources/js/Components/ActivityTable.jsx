@@ -36,7 +36,6 @@ function ActivityTable(props) {
         }
         chekDates(data.activiyFilterDateFrom,data.activiyFilterDateTo);
         fetchActivities("/api/v1/userActivities",moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
-            // console.log(data,'data')
             setState({
                 ...state,
                 activities: data,

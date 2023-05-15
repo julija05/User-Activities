@@ -3,9 +3,6 @@ import { Head } from '@inertiajs/react';
 import ActivityTable from '@/Components/ActivityTable';
 
 export default function Report(props) {
-
-    console.log('props.activities', props.activities)
-
     return (
         <>
             <Head title="Report" />

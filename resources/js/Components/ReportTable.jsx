@@ -31,7 +31,6 @@ function ReportTable(props) {
         e.preventDefault();
         chekDates(data.reportDateFilterFrom,data.reportDateFilterTo)
         fetchActivities('/api/v1/report',moment(data.reportDateFilterFrom).format("yyyy-MM-DD"), moment(data.reportDateFilterTo).format("yyyy-MM-DD")).then(data => {
-            // console.log(data,'data')
             setActivities(data)
         });
     }
