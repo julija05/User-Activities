@@ -50,6 +50,7 @@ function ActivityTable(props) {
                                 type="date"
                                 value={data.activiyFilterDateFrom}
                                 onChange={(e) => setData('activiyFilterDateFrom', e.target.value)}
+                                required
                             />
                         </div>
                     </div>

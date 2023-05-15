@@ -20,12 +20,8 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [LandingController::class,'index'])->name('landing.index');
-// Route::get('mail-send', [SendMailController::class, 'index']);
 Route::get('/report/{id}', [ActivityReportController::class, 'show'])->name('report.show');
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [ActivityController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {

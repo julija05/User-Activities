@@ -30,24 +30,23 @@ class ActivityApiController extends Controller
 
     public function report(Request $request)
     {
+        $activities;
         $startDate =  $request->query('startDate');
         $endDate =  $request->query('endDate');
-        $activities;
+        $query=Activity::query();
         if (is_null($startDate) && is_null($endDate)) {
-
-          
             // Return all activities
-            $activities =   Activity::select('activityDateFrom', DB::raw('SUM(activityTimeSpend) as activityTimeSpend'))
-            ->where('user_id',  auth()->user()->id)
-            ->groupBy('activityDateFrom')
-            ->get();
+            $activities= $query->filterTimeSpent()->get();
         } elseif (!is_null($startDate) && !is_null($endDate)) {
             // Return activities between start and end date
-            $activities =   Activity::select('activityDateFrom', DB::raw('SUM(activityTimeSpend) as activityTimeSpend'))
-            ->where('user_id',  auth()->user()->id)
-            ->whereBetween('activityDateFrom', [$startDate, $endDate])
-            ->groupBy('activityDateFrom')
-            ->get();
+            $data= [
+                'activiyFilterDateFrom'=> $startDate,
+                'activiyFilterDateTo'=> $endDate,
+                'user_id'=> auth()->user()->id,
+            ];
+            $activities= $query
+            ->filterTimeSpent()
+            ->filterUserActivityBetweenTwoDates($data);
         } else {
             // Return error message
             return response()->json(['error' => 'Both start date and end date are required.'], 400);

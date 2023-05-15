@@ -16,22 +16,10 @@ class ActivityController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $startDate =  $request->query('startDate');
-        $endDate =  $request->query('endDate');
-        $activities;
-        if (is_null($startDate) && is_null($endDate)) {
-            // Return all activities
-            $activities = Activity::where('user_id', Auth::id())->get();
-        } elseif (!is_null($startDate) && !is_null($endDate)) {
-            // Return activities between start and end date
-            $activities = Activity::where('user_id', Auth::id())->whereBetween('activityDateFrom', [$startDate, $endDate])->get();
-        } else {
-            // Return error message
-            return response()->json(['error' => 'Both start date and end date are required.'], 400);
-        }
-    
-        return response()->json($activities, 200);
+    { 
+        return $this->createView('Dashboard', [
+            'status' => session('status'),
+        ]);
     }
 
     /**

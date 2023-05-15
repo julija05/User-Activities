@@ -11,7 +11,7 @@ trait ScopeFilterUserActivityBetweenTwoDates
     /**
      * @return 
      */
-    public function scopeFilterUserActivityBetweenTwoDates($query,$data)
+    public function scopeFilterUserActivityBetweenTwoDates($query, $data)
     {
         return $query->where('user_id',$data['user_id'])
         ->whereBetween('activityDateFrom',[$data['activiyFilterDateFrom'],$data['activiyFilterDateTo']])
