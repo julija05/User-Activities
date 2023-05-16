@@ -16,10 +16,16 @@ class ActivityApiController extends Controller
         $activities;
         if (is_null($startDate) && is_null($endDate)) {
             // Return all activities
-            $activities = Activity::where('user_id', auth()->user()->id)->get();
+            $user = auth()->user();
+            $activities =  $user->activities;
         } elseif (!is_null($startDate) && !is_null($endDate)) {
+            $data= [
+                'activiyFilterDateFrom'=> $startDate,
+                'activiyFilterDateTo'=> $endDate,
+                'user_id'=> auth()->user()->id,
+            ];
             // Return activities between start and end date
-            $activities = Activity::where('user_id', auth()->user()->id)->whereBetween('activityDateFrom', [$startDate, $endDate])->get();
+            $activities = Activity::query()->filterUserActivityBetweenTwoDates($data);
         } else {
             // Return error message
             return response()->json(['error' => 'Both start date and end date are required.'], 400);
