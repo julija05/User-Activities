@@ -22,7 +22,14 @@ export default function Authenticated({ user, header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
+                                    
+                                Activity Report
+                                </NavLink>
+                                <NavLink href={route('activities.create')} active={route().current('activities.create')}>
+                                    Add Activity
+                                </NavLink>
+                                <NavLink href={route('activityReport.index')} active={route().current('activityReport.index')}>
+                                    Print Report
                                 </NavLink>
                             </div>
                         </div>

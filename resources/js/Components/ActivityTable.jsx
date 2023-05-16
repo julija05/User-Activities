@@ -7,7 +7,9 @@ import { fetchActivities } from "@/api/fetchActivities";
 import { useState } from "react";
 import moment from 'moment';
 import TextInput from "./TextInput";
-import { router } from "@inertiajs/core";
+import Pagination from "./Pagination";
+import { formatTimeSpent } from "@/format/activity";
+import ToastSuccess from "./ToastSucess";
 
 function ActivityTable(props) {
     const { activities } = props;
@@ -19,6 +21,7 @@ function ActivityTable(props) {
 
     const [state, setState] = useState({
         activities: activities,
+        success:false
     });
     
     function chekDates(dateFrom,dateTo){
@@ -49,6 +52,7 @@ function ActivityTable(props) {
            return errors.sendUserEmail='Email is requred';
         }
         post(route('activityReport.store'));
+        setState({...state,success:true});
     }
 
     return (
@@ -125,7 +129,7 @@ function ActivityTable(props) {
                             >
                                 {activity.activityDescription}
                             </th>
-                            <td className="px-6 py-4">{activity.activityTimeSpend}</td>
+                            <td className="px-6 py-4">{formatTimeSpent(activity.activityTimeSpend)}</td>
                             <td className="px-6 py-4">{activity.activityDateFrom}</td>
                             {!props.report &&
                                 <td className="px-6 py-4">
@@ -143,9 +147,9 @@ function ActivityTable(props) {
             </table>
             {!props.report &&
                 <form onSubmit={handleSendReport}>
-                    <div className=" sm:flex sm:flex-row sm:justify-end sm:items-end">
+                    <div className=" sm:flex sm:flex-row sm:justify-end sm:items-end p-2">
                         <div className="sm:flex sm:flex-column">
-                            <InputLabel htmlFor="sendUserEmail" value="User Email" />
+                            <InputLabel className="mt-3" htmlFor="sendUserEmail" value="User Email" />
                             <TextInput
                                 id="nasendUserEmailme"
                                 name="sendUserEmail"
@@ -156,10 +160,21 @@ function ActivityTable(props) {
                                 required /> 
                         </div>
                             {errors.sendUserEmail && <div className='text-red-500 m-3'>{errors.sendUserEmail}</div>}
-                        <PrimaryButton className="ml-2 ">Send Report</PrimaryButton>
+                        <PrimaryButton className="ml-2 mb-1 ">Send Report</PrimaryButton>
+                    </div>
+                    <div>
+                        {state.success && <ToastSuccess
+                            onClose={()=> {
+                                setState({
+                                    ...state,
+                                    success:false,
+                                })
+                            }}
+                        />}
                     </div>
                 </form>
-            }
+            } 
+           
         </div>
     );
 }

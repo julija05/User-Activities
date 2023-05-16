@@ -25,6 +25,7 @@
     "dependencies": {
         "flowbite": "^1.6.5",
         "flowbite-react": "^0.4.4",
-        "moment": "^2.29.4"
+        "moment": "^2.29.4",
+        "timepicker.js": "^3.1.0"
     }
 }

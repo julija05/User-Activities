@@ -1,12 +1,11 @@
 import React, { useEffect, setState } from "react";
 import { useForm } from '@inertiajs/react';
 import InputLabel from "./InputLabel";
-import PrimaryButton from "./PrimaryButton";
 import DangerButton from "./DangerButton";
 import { fetchActivities } from "@/api/fetchActivities";
 import { useState } from "react";
 import moment from 'moment';
-import TextInput from "./TextInput";
+import { formatTimeSpent } from "@/format/activity";
 
 function ReportTable(props) {
     const [activities, setActivities] = useState([]);
@@ -90,7 +89,7 @@ function ReportTable(props) {
                             key={activity.id}
                             className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
                         >
-                            <td className="px-6 py-4">{activity.activityTimeSpend}</td>
+                            <td className="px-6 py-4">{formatTimeSpent(activity.activityTimeSpend)}</td>
                             <td className="px-6 py-4">{activity.activityDateFrom}</td>
                         </tr>
                     ))}

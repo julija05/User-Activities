@@ -16,7 +16,7 @@ class StoreActivityRequest extends FormRequest
     {
         return [
             'activityDateFrom' => 'required|date',
-            'activityTimeSpend' => 'required|string',
+            'activityTimeSpend' => 'required|integer',
             'activityDescription'=> 'required|string',
             'user_id'=>'required|integer'
         ];
