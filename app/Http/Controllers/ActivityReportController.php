@@ -50,8 +50,7 @@ class ActivityReportController extends Controller
      */
     public function show(ActivityReport $activityReport, $id)
     {
-       $activitiy = Activity::query();
-       $activities = $activitiy->filterUserActivityBetweenTwoDates($activityReport->getReport($id));
+        $activities = Activity::query()->filterUserActivityBetweenTwoDates($activityReport->getReport($id));
 
        return $this->createView('Report', [
             'activities' => $activities
