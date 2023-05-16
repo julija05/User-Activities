@@ -48,6 +48,11 @@ function ActivityTable(props) {
 
     function handleSendReport(e) {
         e.preventDefault();
+        if(!data.activiyFilterDateFrom ||  !data.activiyFilterDateTo){
+            e.preventDefault();
+            return errors.activiyFilterDateFrom='Please fill both dates';
+        }
+        
         if(!data.sendUserEmail){
            return errors.sendUserEmail='Email is requred';
         }
