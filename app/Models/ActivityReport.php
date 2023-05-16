@@ -23,6 +23,7 @@ class ActivityReport extends Model
         'activiyFilterDateFrom',
         'activiyFilterDateTo',
     ];
+
     
     public function getReport($id)
     {

@@ -17,7 +17,8 @@ class StoreActivityReportRequest extends FormRequest
         return [
             'activiyFilterDateFrom' => 'required|date',
             'activiyFilterDateTo' => 'required|date|after_or_equal:activiyFilterDateFrom',
-            'user_id'=>'required|integer'
+            'user_id'=>'required|integer',
+            'sendUserEmail'=> 'required|email'
         ];
     }
     protected function prepareForValidation()

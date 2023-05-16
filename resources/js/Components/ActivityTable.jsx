@@ -7,9 +7,9 @@ import { fetchActivities } from "@/api/fetchActivities";
 import { useState } from "react";
 import moment from 'moment';
 import TextInput from "./TextInput";
-import Pagination from "./Pagination";
 import { formatTimeSpent } from "@/format/activity";
 import ToastSuccess from "./ToastSucess";
+import ToastError from "./ToastError";
 
 function ActivityTable(props) {
     const { activities } = props;
@@ -21,12 +21,14 @@ function ActivityTable(props) {
 
     const [state, setState] = useState({
         activities: activities,
-        success:false
+        success: false,
+        error: false,
+        errorMessage: '',
     });
-    
-    function chekDates(dateFrom,dateTo){
-        if(dateTo < dateFrom){
-            errors.activiyFilterDateTo='Check the time range'
+
+    function chekDates(dateFrom, dateTo) {
+        if (dateTo < dateFrom) {
+            errors.activiyFilterDateTo = 'Check the time range'
             return errors.activiyFilterDateTo
         }
     }
@@ -34,11 +36,11 @@ function ActivityTable(props) {
 
     function handleFilterClick(e) {
         e.preventDefault();
-        if(!data.activiyFilterDateFrom || !data.activiyFilterDateTo){
-           return errors.activiyFilterDateFrom = 'Both dates are required'
+        if (!data.activiyFilterDateFrom || !data.activiyFilterDateTo) {
+            return errors.activiyFilterDateFrom = 'Both dates are required'
         }
-        chekDates(data.activiyFilterDateFrom,data.activiyFilterDateTo);
-        fetchActivities("/api/v1/userActivities",moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
+        chekDates(data.activiyFilterDateFrom, data.activiyFilterDateTo);
+        fetchActivities("/api/v1/userActivities", moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
             setState({
                 ...state,
                 activities: data,
@@ -46,61 +48,84 @@ function ActivityTable(props) {
         });
     }
 
+    function isValidEmail(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
     function handleSendReport(e) {
         e.preventDefault();
-        if(!data.activiyFilterDateFrom ||  !data.activiyFilterDateTo){
-            e.preventDefault();
-            return errors.activiyFilterDateFrom='Please fill both dates';
+        setState({ ...state, error: false, errorMessage: "", success: false });
+
+        if (!data.activiyFilterDateFrom || !data.activiyFilterDateTo) {
+            setState({ ...state, error: true, errorMessage: "wrong date" });
+            return
         }
-        
-        if(!data.sendUserEmail){
-           return errors.sendUserEmail='Email is requred';
+
+        if (!data.sendUserEmail) {
+            setState({ ...state, error: true, errorMessage: 'Email is required' });
+            return
         }
-        post(route('activityReport.store'));
-        setState({...state,success:true});
+
+        if (!isValidEmail(data.sendUserEmail)) {
+            errors.sendUserEmail = 'Enter Valid Email'
+            setState({ ...state, error: true, errorMessage: 'Email is invalid' });
+            return
+        }
+
+        post(route('activityReport.store'), {
+            onError: (error) => {
+                setState({ ...state, error: true, errorMessage: error });
+            },
+            onSuccess: () => {
+                setState({ ...state, success: true, error: false, errorMessage: "" });
+            }
+        });
+
+        // Render ToastSuccess component
+
     }
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             {!props.report &&
-            <form onSubmit={handleFilterClick}>
-                <div class=" sm:flex sm:flex-row">
-                    <div className="py-2 ml-1">
-                        <div className="">
-                            <InputLabel htmlFor="date" value="Filter Activity From" />
-                            <input
-                                id="activiyFilterDateFrom"
-                                name="activiyFilterDateFrom"
-                                type="date"
-                                value={data.activiyFilterDateFrom}
-                                onChange={(e) => setData('activiyFilterDateFrom', e.target.value)}
-                                required
-                            />
+                <form onSubmit={handleFilterClick}>
+                    <div class=" sm:flex sm:flex-row">
+                        <div className="py-2 ml-1">
+                            <div className="">
+                                <InputLabel htmlFor="date" value="Filter Activity From" />
+                                <input
+                                    id="activiyFilterDateFrom"
+                                    name="activiyFilterDateFrom"
+                                    type="date"
+                                    value={data.activiyFilterDateFrom}
+                                    onChange={(e) => setData('activiyFilterDateFrom', e.target.value)}
+                                    required
+                                />
+                            </div>
+
                         </div>
-                             
-                    </div>
-                    <div className="py-2 ml-1">
-                        <div className="">
-                            <InputLabel htmlFor="date" value="Filter Activity To" />
-                            <input
-                                id="activiyFilterDateTo"
-                                name="activiyFilterDateTo"
-                                type="date"
-                                value={data.activiyFilterDateTo}
-                                onChange={(e) => setData('activiyFilterDateTo', e.target.value)}
-                                required
-                            />
-                           
+                        <div className="py-2 ml-1">
+                            <div className="">
+                                <InputLabel htmlFor="date" value="Filter Activity To" />
+                                <input
+                                    id="activiyFilterDateTo"
+                                    name="activiyFilterDateTo"
+                                    type="date"
+                                    value={data.activiyFilterDateTo}
+                                    onChange={(e) => setData('activiyFilterDateTo', e.target.value)}
+                                    required
+                                />
+
+                            </div>
+                        </div>
+                        <div className="self-center m-5 pt-3">
+                            <DangerButton>Filter</DangerButton>
                         </div>
                     </div>
-                    <div className="self-center m-5 pt-3">
-                        <DangerButton>Filter</DangerButton>
+                    <div className='sm:flex sm:flex-row'>
+                        {errors.activiyFilterDateFrom && <div className='text-red-500 m-3'>{errors.activiyFilterDateFrom}</div>}
+                        {errors.activiyFilterDateTo && <div className='text-red-500 m-3'>{errors.activiyFilterDateTo}</div>}
                     </div>
-                </div>
-                <div className='sm:flex sm:flex-row'>
-                {errors.activiyFilterDateFrom && <div className='text-red-500 m-3'>{errors.activiyFilterDateFrom}</div>}
-                    {errors.activiyFilterDateTo && <div className='text-red-500 m-3'>{errors.activiyFilterDateTo}</div>}
-                </div>
                 </form>
             }
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -162,24 +187,35 @@ function ActivityTable(props) {
                                 className="ml-2"
                                 isFocused={true}
                                 onChange={(e) => setData('sendUserEmail', e.target.value)}
-                                required /> 
+                                required />
                         </div>
-                            {errors.sendUserEmail && <div className='text-red-500 m-3'>{errors.sendUserEmail}</div>}
-                        <PrimaryButton className="ml-2 mb-1 ">Send Report</PrimaryButton>
+                        {errors.sendUserEmail && <div className='text-red-500 m-3'>{errors.sendUserEmail}</div>}
+                        <PrimaryButton type="submit" className="ml-2 mb-1 ">Send Report</PrimaryButton>
                     </div>
                     <div>
                         {state.success && <ToastSuccess
-                            onClose={()=> {
+                            onClose={() => {
                                 setState({
                                     ...state,
-                                    success:false,
+                                    success: false,
+                                })
+                            }}
+                        />}
+                    </div>
+                    <div>
+                        {state.error && <ToastError message={state.errorMessage}
+                            onClose={() => {
+                                setState({
+                                    ...state,
+                                    error: false,
+                                    errorMessage: '',
                                 })
                             }}
                         />}
                     </div>
                 </form>
-            } 
-           
+            }
+
         </div>
     );
 }
