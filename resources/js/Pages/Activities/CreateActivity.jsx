@@ -5,6 +5,7 @@ import { Head, useForm } from '@inertiajs/react';
 import moment from 'moment';
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
+import createActivitySvg from '../../../../public/assets/createActivitySvg.svg'
 
 import TimePicker from 'timepicker.js/dist/timepicker'
 
@@ -72,10 +73,11 @@ export default function CreateActivity({ auth }) {
                     </div>
                 </div>
             </div>
-            <div className=''>
+            <div className="flex flex-row  justify-between mt-10 ">
+            <div className='border ml-16 shadow-2xl w-1/2'>
             <form onSubmit={submit}>
-                <div class=" sm:flex sm:flex-row sm:justify-center sm:items-center ">
-                    <div className="py-12 m-4">
+                <div class=" sm:flex sm:flex-row sm:justify-start sm:items-start p">
+                    <div className="p-12">
                         <div className="">
                             <InputLabel htmlFor="date" value="Activity Date" />
                             <input min={today}
@@ -89,9 +91,9 @@ export default function CreateActivity({ auth }) {
                         </div>
                     </div>
                     {errors.activityDateFrom && <div className='text-red-500 m-3'>{errors.activityDateFrom}</div>}
-                    <div className="py-12 m-4">
-                        <div className="">
+                    <div className="p-12 ml-16">
                             <InputLabel htmlFor="date" value="Time Spend" />
+                        <div className="">
                             <div ref={refTimePicker}> &nbsp;
                                 {state.activityTimeSpend}
                             </div>
@@ -99,15 +101,21 @@ export default function CreateActivity({ auth }) {
                     </div>
                 </div>
                 {errors.activityTimeSpend && <div className='text-red-500 m-3'>{errors.activityTimeSpend}</div>}
-                <div class=" w- sm:flex sm:flex-col sm:justify-center sm:items-center">
+                <div class="flex flex-col justify-end items-start p-8 mt-28
+                ">
                     <InputLabel htmlFor="date" value="Description" />
-                    <textarea id="activityDescription" value={data.activityDescription} maxLength={50}
-                        required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="4" class="block p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:50)..."></textarea>
+                    <textarea id="activityDescription" value={data.activityDescription} maxLength={100}
+                        required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="7" class="w-full p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:100)..."></textarea>
                     {errors.activityDescription && <div className='text-red-500 m-3'>{errors.activityDescription}</div>}
-                    <PrimaryButton className='mt-5'>Create</PrimaryButton>
+                    <PrimaryButton className='mt-12'>Create</PrimaryButton>
                 </div>
             </form>
             </div>
+            <div className=''>
+                <img className='w-4/6 m-20' src={createActivitySvg}/>
+            </div>
+            </div>
+           
         </AuthenticatedLayout>
     );
 }
