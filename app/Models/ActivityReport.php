@@ -30,7 +30,7 @@ class ActivityReport extends Model
         $report = ActivityReport::where('id', $id)->first();
 
         if (!$report) {
-            return response()->json(['error' => 'Report not found'], 404); 
+            return abort(404); 
         }
 
         return $report;

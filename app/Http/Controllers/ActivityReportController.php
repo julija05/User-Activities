@@ -38,6 +38,7 @@ class ActivityReportController extends Controller
     public function store(StoreActivityReportRequest $request)
     {
         $activity= ActivityReport::create($request->validated());
+
         
         Mail::to($request['sendUserEmail'])->send(
             new SendMail($activity)
@@ -50,6 +51,9 @@ class ActivityReportController extends Controller
      */
     public function show(ActivityReport $activityReport, $id)
     {
+        if(!$id || !$activityReport->getReport($id)){
+            abort(404);
+        }
         $activities = Activity::query()->filterUserActivityBetweenTwoDates($activityReport->getReport($id));
 
        return $this->createView('Report', [

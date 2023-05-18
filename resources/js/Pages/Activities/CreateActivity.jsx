@@ -72,11 +72,12 @@ export default function CreateActivity({ auth }) {
                     </div>
                 </div>
             </div>
+            <div className=''>
             <form onSubmit={submit}>
                 <div class=" sm:flex sm:flex-row sm:justify-center sm:items-center ">
                     <div className="py-12 m-4">
                         <div className="">
-                            <InputLabel htmlFor="date" value="Activity From" />
+                            <InputLabel htmlFor="date" value="Activity Date" />
                             <input min={today}
                                 id="activityDateFrom"
                                 name="activityDateFrom"
@@ -101,11 +102,12 @@ export default function CreateActivity({ auth }) {
                 <div class=" w- sm:flex sm:flex-col sm:justify-center sm:items-center">
                     <InputLabel htmlFor="date" value="Description" />
                     <textarea id="activityDescription" value={data.activityDescription} maxLength={50}
-                        required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="4" class="block p-2.5  max-w-md text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:50)..."></textarea>
+                        required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="4" class="block p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:50)..."></textarea>
                     {errors.activityDescription && <div className='text-red-500 m-3'>{errors.activityDescription}</div>}
                     <PrimaryButton className='mt-5'>Create</PrimaryButton>
                 </div>
             </form>
+            </div>
         </AuthenticatedLayout>
     );
 }

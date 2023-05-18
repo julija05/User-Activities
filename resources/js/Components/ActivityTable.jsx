@@ -128,6 +128,7 @@ function ActivityTable(props) {
                     </div>
                 </form>
             }
+            <div className='overflow-y-scroll max-h-80'>
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -175,6 +176,7 @@ function ActivityTable(props) {
                     ))}
                 </tbody>
             </table>
+            </div>
             {!props.report &&
                 <form onSubmit={handleSendReport}>
                     <div className=" sm:flex sm:flex-row sm:justify-end sm:items-end p-2">

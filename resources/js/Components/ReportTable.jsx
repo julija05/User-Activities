@@ -6,6 +6,8 @@ import { fetchActivities } from "@/api/fetchActivities";
 import { useState } from "react";
 import moment from 'moment';
 import { formatTimeSpent } from "@/format/activity";
+import PrimaryButton from "./PrimaryButton";
+import ReactPDF from '@react-pdf/renderer';
 
 function ReportTable(props) {
     const [activities, setActivities] = useState([]);
@@ -24,6 +26,11 @@ function ReportTable(props) {
             errors.activiyFilterDateTo='Check the time range'
             return errors.activiyFilterDateTo
         }
+    }
+
+    function handleExport(e){
+        e.preventDefault();
+        ReactPDF.render(<ReportTable />, `${__dirname}/example.pdf`);
     }
 
     function handleFilterClick(e) {
@@ -71,7 +78,7 @@ function ReportTable(props) {
                 </div>
             </div>
                 </form>
-
+                <div className='overflow-y-scroll max-h-80'>
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -95,6 +102,10 @@ function ReportTable(props) {
                     ))}
                 </tbody>
             </table>
+            </div>
+            <div className=" sm:flex sm:flex-row sm:justify-end sm:items-end p-2">
+            <PrimaryButton onSubmit={handleExport}>Expor as PDF</PrimaryButton>
+            </div>
         </div>
     );
 }

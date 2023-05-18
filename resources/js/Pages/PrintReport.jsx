@@ -4,7 +4,6 @@ import ReportTable from '@/Components/ReportTable';
 
 export default function Dashboard({ auth }) {
 
- 
     return (
         <AuthenticatedLayout
             user={auth.user}
