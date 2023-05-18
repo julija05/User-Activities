@@ -145,6 +145,13 @@ function ActivityTable(props) {
                             <th scope="col" className="px-6 py-3">
                                 edit activity
                             </th>
+                            
+                        }
+                           {!props.report &&
+                            <th scope="col" className="px-6 py-3">
+                                delete activity
+                            </th>
+                            
                         }
                     </tr>
                 </thead>
@@ -165,10 +172,20 @@ function ActivityTable(props) {
                             {!props.report &&
                                 <td className="px-6 py-4">
                                     <a
-                                        href="#"
+                                        href={route('activities.edit',[activity.id])}
                                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                     >
                                         Edit
+                                    </a>
+                                </td>
+                            }
+                             {!props.report &&
+                                <td className="px-6 py-4">
+                                    <a
+                                        href={route('activities.destroy',[activity.id])}
+                                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                    >
+                                        Delete
                                     </a>
                                 </td>
                             }

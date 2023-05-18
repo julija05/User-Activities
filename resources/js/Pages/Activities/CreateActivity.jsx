@@ -10,18 +10,17 @@ import createActivitySvg from '../../../../public/assets/createActivitySvg.svg'
 import TimePicker from 'timepicker.js/dist/timepicker'
 
 
-export default function CreateActivity({ auth }) {
+export default function CreateActivity({ auth,title,value=null }) {
     const [state, setState] = useState({
         activityTimeSpend: '',
     })
-
     const refTimePicker = useRef()
 
     const today = new Date().toISOString().substr(0, 10); // Get today's date in the format "YYYY-MM-DD"
     const { data, setData, post, processing, errors, reset } = useForm({
-        activityDateFrom: '',
+        activityDateFrom: value ? moment(value.activityDateFrom).format("yyyy-MM-DD") : '' ,
         activityTimeSpend: '',
-        activityDescription: '',
+        activityDescription: value ? value.activityDescription  :  '',
         user_id: auth.user.id,
     });
 
@@ -63,7 +62,7 @@ export default function CreateActivity({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Create Activity</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{title} Activity</h2>}
         >
             <Head title="CreateActivity" />
 
@@ -104,10 +103,10 @@ export default function CreateActivity({ auth }) {
                 <div class="flex flex-col justify-end items-start p-8 mt-28
                 ">
                     <InputLabel htmlFor="date" value="Description" />
-                    <textarea id="activityDescription" value={data.activityDescription} maxLength={100}
+                    <textarea id="activityDescription" value={data.activityDescription } maxLength={100}
                         required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="7" class="w-full p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:100)..."></textarea>
                     {errors.activityDescription && <div className='text-red-500 m-3'>{errors.activityDescription}</div>}
-                    <PrimaryButton className='mt-12'>Create</PrimaryButton>
+                    <PrimaryButton className='mt-12'>{title}</PrimaryButton>
                 </div>
             </form>
             </div>

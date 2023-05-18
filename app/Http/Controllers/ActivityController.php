@@ -29,6 +29,7 @@ class ActivityController extends Controller
     {
         return $this->createView('Activities/CreateActivity', [
             'status' => session('status'),
+            'title'=> 'Create'
         ]);
     }
 
@@ -46,7 +47,11 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-        //
+        return $this->createView('Activities/CreateActivity', [
+            'status' => session('status'),
+            'title'=> 'Edit',
+            'value'=>  $activity
+        ]);
     }
 
     /**
