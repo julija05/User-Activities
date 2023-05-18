@@ -1,23 +1,24 @@
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import moment from 'moment';
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
 import createActivitySvg from '../../../../public/assets/createActivitySvg.svg'
 
 import TimePicker from 'timepicker.js/dist/timepicker'
+import SecondaryButton from '@/Components/SecondaryButton';
 
 
-export default function CreateActivity({ auth,title,value=null }) {
+export default function CreateActivity({ auth,title,value=null,routeFor=null }) {
     const [state, setState] = useState({
         activityTimeSpend: '',
     })
     const refTimePicker = useRef()
 
     const today = new Date().toISOString().substr(0, 10); // Get today's date in the format "YYYY-MM-DD"
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, put,processing, errors, reset } = useForm({
         activityDateFrom: value ? moment(value.activityDateFrom).format("yyyy-MM-DD") : '' ,
         activityTimeSpend: '',
         activityDescription: value ? value.activityDescription  :  '',
@@ -57,7 +58,12 @@ export default function CreateActivity({ auth,title,value=null }) {
     const submit = (e) => {
         e.preventDefault();
         data.activityDateFrom = moment(data.activityDateFrom).format("yyyy-MM-DD");
-        post(route('activities.store'));
+        if(value){
+            console.log(value.id,'value.id');
+            put(route(`activities.update`,[value.id]));
+            return;
+        }
+        post(route(`activities.store`));
     };
     return (
         <AuthenticatedLayout
@@ -106,12 +112,15 @@ export default function CreateActivity({ auth,title,value=null }) {
                     <textarea id="activityDescription" value={data.activityDescription } maxLength={100}
                         required onChange={(e) => setData('activityDescription', e.target.value)} name='activityDescription' rows="7" class="w-full p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Short description (max:100)..."></textarea>
                     {errors.activityDescription && <div className='text-red-500 m-3'>{errors.activityDescription}</div>}
+                    <div>
                     <PrimaryButton className='mt-12'>{title}</PrimaryButton>
+                    <SecondaryButton className='mt-12 ml-2'> <Link href={route('dashboard')} > Cancel </Link></SecondaryButton>
+                    </div>
                 </div>
             </form>
             </div>
             <div className=''>
-                <img className='w-4/6 m-20' src={createActivitySvg}/>
+                <img className='w-4/6 m-20' src={createActivitySvg} alt='Woman adds new activity'/>
             </div>
             </div>
            

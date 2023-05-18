@@ -10,6 +10,7 @@ import TextInput from "./TextInput";
 import { formatTimeSpent } from "@/format/activity";
 import ToastSuccess from "./ToastSucess";
 import ToastError from "./ToastError";
+import SecondaryButton from "./SecondaryButton";
 
 function ActivityTable(props) {
     const { activities } = props;
@@ -17,6 +18,7 @@ function ActivityTable(props) {
         activiyFilterDateFrom: '',
         activiyFilterDateTo: '',
         sendUserEmail: '',
+        id: '',
     });
 
     const [state, setState] = useState({
@@ -52,6 +54,15 @@ function ActivityTable(props) {
         return /\S+@\S+\.\S+/.test(email);
     }
 
+    const deleteActivity = (id) => {
+        delete(route('activities.destroy',[id]), {
+            preserveScroll: true,
+            onSuccess: () =>   setState({ ...state, success: true, error: false, errorMessage: "" }),
+            onError: () =>  setState({ ...state, error: true, errorMessage: error }),
+            onFinish: () => reset(),
+        });
+    };
+
     function handleSendReport(e) {
         e.preventDefault();
         setState({ ...state, error: false, errorMessage: "", success: false });
@@ -82,6 +93,7 @@ function ActivityTable(props) {
         });
 
         // Render ToastSuccess component
+       
 
     }
 
@@ -181,12 +193,12 @@ function ActivityTable(props) {
                             }
                              {!props.report &&
                                 <td className="px-6 py-4">
-                                    <a
-                                        href={route('activities.destroy',[activity.id])}
+                                    <SecondaryButton
+                                        onClick={ () => deleteActivity(activity.id)}
                                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                     >
                                         Delete
-                                    </a>
+                                    </SecondaryButton>
                                 </td>
                             }
                         </tr>

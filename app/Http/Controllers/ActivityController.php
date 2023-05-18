@@ -29,15 +29,22 @@ class ActivityController extends Controller
     {
         return $this->createView('Activities/CreateActivity', [
             'status' => session('status'),
-            'title'=> 'Create'
+            'title'=> 'Create',
+            'routeFor'=>'store'
         ]);
+    }
+
+    public function show(Request $request,$id)
+    {
+    //   $activity = Activity::find($id);
+    //   return $activity;
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreActivityRequest $request)
-    {  
+    { 
         Activity::create($request->validated());
         return Redirect::route('dashboard');
     }
@@ -50,7 +57,8 @@ class ActivityController extends Controller
         return $this->createView('Activities/CreateActivity', [
             'status' => session('status'),
             'title'=> 'Edit',
-            'value'=>  $activity
+            'value'=>  $activity,
+            'routeFor'=> 'update'
         ]);
     }
 
@@ -59,7 +67,8 @@ class ActivityController extends Controller
      */
     public function update(UpdateActivityRequest $request, Activity $activity)
     {
-        //
+        $activity->update($request->validated());
+        return Redirect::route('dashboard');
     }
 
     /**
@@ -67,6 +76,7 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
-        //
+        $activity->delete();
+        return Redirect::route('dashboard');
     }
 }
