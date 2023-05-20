@@ -17,7 +17,7 @@ class UpdateActivityRequest extends FormRequest
         return [
             'activityDateFrom' => 'date',
             'activityTimeSpend' => 'integer',
-            'activityDescription'=> 'string',
+            'activityDescription'=> 'string|max:100',
             'user_id'=>'integer'
         ];
     }

@@ -6,16 +6,15 @@ import moment from 'moment';
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
 import createActivitySvg from '../../../../public/assets/createActivitySvg.svg'
-
 import TimePicker from 'timepicker.js/dist/timepicker'
 import SecondaryButton from '@/Components/SecondaryButton';
 
 
 export default function CreateActivity({ auth,title,value=null,routeFor=null }) {
     const [state, setState] = useState({
-        activityTimeSpend: '',
+        activityTimeSpend: value ? moment.utc(value.activityTimeSpend * 1000).format('HH:mm') : '',
     })
-    const refTimePicker = useRef()
+    const refTimePicker = useRef();
 
     const today = new Date().toISOString().substr(0, 10); // Get today's date in the format "YYYY-MM-DD"
     const { data, setData, post, put,processing, errors, reset } = useForm({
@@ -59,7 +58,6 @@ export default function CreateActivity({ auth,title,value=null,routeFor=null }) 
         e.preventDefault();
         data.activityDateFrom = moment(data.activityDateFrom).format("yyyy-MM-DD");
         if(value){
-            console.log(value.id,'value.id');
             put(route(`activities.update`,[value.id]));
             return;
         }

@@ -3,14 +3,16 @@ import { useForm } from '@inertiajs/react';
 import InputLabel from "./InputLabel";
 import DangerButton from "./DangerButton";
 import { fetchActivities } from "@/api/fetchActivities";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import moment from 'moment';
 import { formatTimeSpent } from "@/format/activity";
 import PrimaryButton from "./PrimaryButton";
-import ReactPDF from '@react-pdf/renderer';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 function ReportTable(props) {
     const [activities, setActivities] = useState([]);
+    const tableRef = useRef(null);
 
     useEffect(() => {
         fetchActivities("/api/v1/report").then(data => setActivities(data));
@@ -28,17 +30,22 @@ function ReportTable(props) {
         }
     }
 
-    function handleExport(e){
-        e.preventDefault();
-        ReactPDF.render(<ReportTable />, `${__dirname}/example.pdf`);
-    }
-
     function handleFilterClick(e) {
         e.preventDefault();
         chekDates(data.reportDateFilterFrom,data.reportDateFilterTo)
         fetchActivities('/api/v1/report',moment(data.reportDateFilterFrom).format("yyyy-MM-DD"), moment(data.reportDateFilterTo).format("yyyy-MM-DD")).then(data => {
             setActivities(data)
         });
+    }
+
+    function handleExportPDF() {
+        html2canvas(tableRef.current)
+            .then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                pdf.addImage(imgData, 'PNG', 0, 0);
+                pdf.save('activity-table.pdf');
+            });
     }
 
     return (
@@ -78,7 +85,7 @@ function ReportTable(props) {
                 </div>
             </div>
                 </form>
-                <div className='overflow-y-scroll max-h-80'>
+                <div className='overflow-y-scroll max-h-80'  ref={tableRef}>
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -104,7 +111,7 @@ function ReportTable(props) {
             </table>
             </div>
             <div className=" sm:flex sm:flex-row sm:justify-end sm:items-end p-2">
-            <PrimaryButton onSubmit={handleExport}>Expor as PDF</PrimaryButton>
+            <PrimaryButton onClick={handleExportPDF}>Export as PDF</PrimaryButton>
             </div>
         </div>
     );

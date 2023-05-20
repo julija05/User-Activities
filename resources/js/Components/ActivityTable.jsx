@@ -14,7 +14,7 @@ import SecondaryButton from "./SecondaryButton";
 
 function ActivityTable(props) {
     const { activities } = props;
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         activiyFilterDateFrom: '',
         activiyFilterDateTo: '',
         sendUserEmail: '',
@@ -55,7 +55,7 @@ function ActivityTable(props) {
     }
 
     const deleteActivity = (id) => {
-        delete(route('activities.destroy',[id]), {
+        destroy(route('activities.destroy',[id]), {
             preserveScroll: true,
             onSuccess: () =>   setState({ ...state, success: true, error: false, errorMessage: "" }),
             onError: () =>  setState({ ...state, error: true, errorMessage: error }),
