@@ -55,13 +55,25 @@ function ActivityTable(props) {
     }
 
     const deleteActivity = (id) => {
-        destroy(route('activities.destroy',[id]), {
+        try {
+          destroy(route("activities.destroy", [id]), {
             preserveScroll: true,
-            onSuccess: () =>   setState({ ...state, success: true, error: false, errorMessage: "" }),
-            onError: () =>  setState({ ...state, error: true, errorMessage: error }),
+            onSuccess: () => {
+              setState((prevState) => ({
+                ...prevState,
+                activities: prevState.activities.filter((activity) => activity.id !== id),
+                success: true,
+                error: false,
+                errorMessage: "",
+              }));
+            },
             onFinish: () => reset(),
-        });
-    };
+          });
+        } catch (error) {
+          console.error("An error occurred while deleting the activity:", error);
+          errors.set("deleteActivity", "An error occurred while deleting the activity.");
+        }
+      };
 
     function handleSendReport(e) {
         e.preventDefault();
@@ -91,10 +103,6 @@ function ActivityTable(props) {
                 setState({ ...state, success: true, error: false, errorMessage: "" });
             }
         });
-
-        // Render ToastSuccess component
-       
-
     }
 
     return (
