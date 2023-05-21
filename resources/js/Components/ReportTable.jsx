@@ -9,13 +9,25 @@ import { formatTimeSpent } from "@/format/activity";
 import PrimaryButton from "./PrimaryButton";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ERROR_CHECK_TIME_RANGE, ERROR_EXPORTING_PDF, ERROR_FILTERING_DATA, ERROR_SUBMITING_FORM } from "@/constants/constants";
+import { REPORT_ROUTE } from "@/constants/apiRoutes";
 
 function ReportTable(props) {
     const [activities, setActivities] = useState([]);
     const tableRef = useRef(null);
 
     useEffect(() => {
-        fetchActivities("/api/v1/report").then(data => setActivities(data));
+        fetchActivities(REPORT_ROUTE).then(data => setActivities(data))
+        .catch(error=> {
+            if (error.response && error.response.data && error.response.data.errors) {
+                setData((prevData) => ({
+                  ...prevData,
+                  errors: error.response.data.errors,
+                }));   
+              }else{
+                  console.error(ERROR_SUBMITING_FORM, error);
+              }
+        });
     }, []);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -25,19 +37,31 @@ function ReportTable(props) {
 
     function chekDates(dateFrom,dateTo){
         if(dateTo < dateFrom){
-            errors.activiyFilterDateTo='Check the time range'
+            errors.activiyFilterDateTo=ERROR_CHECK_TIME_RANGE
             return errors.activiyFilterDateTo
         }
     }
 
     function handleFilterClick(e) {
         e.preventDefault();
-        chekDates(data.reportDateFilterFrom,data.reportDateFilterTo)
-        fetchActivities('/api/v1/report',moment(data.reportDateFilterFrom).format("yyyy-MM-DD"), moment(data.reportDateFilterTo).format("yyyy-MM-DD")).then(data => {
-            setActivities(data)
-        });
-    }
-
+        reset(); // Clear any previous errors
+          chekDates(data.reportDateFilterFrom, data.reportDateFilterTo);
+          fetchActivities(REPORT_ROUTE, moment(data.reportDateFilterFrom).format("yyyy-MM-DD"), moment(data.reportDateFilterTo).format("yyyy-MM-DD"))
+            .then(data => {
+              setActivities(data);
+              reset();
+            })
+            .catch((error) => {
+                if (error.response && error.response.data && error.response.data.errors) {
+                  setData((prevData) => ({
+                    ...prevData,
+                    errors: error.response.data.errors,
+                  }));   
+                }else{
+                    console.error(ERROR_FILTERING_DATA, error);
+                }
+            });
+    }  
     function handleExportPDF() {
         html2canvas(tableRef.current)
             .then((canvas) => {
@@ -45,13 +69,22 @@ function ReportTable(props) {
                 const pdf = new jsPDF();
                 pdf.addImage(imgData, 'PNG', 0, 0);
                 pdf.save('activity-table.pdf');
+            }) .catch((error) => {
+                if (error.response && error.response.data && error.response.data.errors) {
+                    setData((prevData) => ({
+                      ...prevData,
+                      errors: error.response.data.errors,
+                    }))
+                }else{
+                    console.error(ERROR_EXPORTING_PDF, error);
+                }   
             });
     }
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <form onSubmit={handleFilterClick}>
-            <div class=" sm:flex sm:flex-row">
+            <div className=" sm:flex sm:flex-row">
                 <div className="py-2 ml-1">
                     <div className="">
                         <InputLabel htmlFor="date" value="Filter Activity From" />

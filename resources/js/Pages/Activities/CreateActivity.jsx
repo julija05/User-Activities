@@ -8,6 +8,9 @@ import createActivitySvg from '../../../../public/assets/createActivitySvg.svg';
 import TimePicker from 'timepicker.js/dist/timepicker';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { formatTimeSpent } from '@/format/activity';
+import {CREATE_ACTIVITIES_, UPDATE_ACTIVITIES } from '@/constants/apiRoutes';
+import ToastSuccess from '@/Components/ToastSucess';
+import { useState } from 'react';
 
 export default function CreateActivity({ auth, title, value = null, routeFor = null }) {
     const { data, setData, post, put, processing, errors, reset } = useForm({
@@ -15,6 +18,11 @@ export default function CreateActivity({ auth, title, value = null, routeFor = n
         activityTimeSpend: value ? value.activityTimeSpend : '',
         activityDescription: value ? value.activityDescription : '',
         user_id: auth.user.id,
+    });
+    const [state, setState] = useState({
+        success: false,
+        error: false,
+        errorMessage: '',
     });
 
     const refTimePicker = useRef();
@@ -45,9 +53,9 @@ export default function CreateActivity({ auth, title, value = null, routeFor = n
 
     const submit = (e) => {
         e.preventDefault();
-        data.activityDateFrom = moment(data.activityDateFrom).format('yyyy-MM-DD');
-        if (value) {
-            put(route(`activities.update`, [value.id]), {
+        // data.activityDateFrom = moment(data.activityDateFrom).format('yyyy-MM-DD');
+        if (value && value.id) {
+            put(route(UPDATE_ACTIVITIES, [value.id]), {
                 onError: (error) => {
                     setState({ ...state, error: true, errorMessage: error });
                 },
@@ -57,7 +65,7 @@ export default function CreateActivity({ auth, title, value = null, routeFor = n
             });
             return;
         }
-        post(route(`activities.store`), {
+        post(route(CREATE_ACTIVITIES_), {
             onError: (error) => {
                 setState({ ...state, error: true, errorMessage: error });
             },
@@ -69,7 +77,7 @@ export default function CreateActivity({ auth, title, value = null, routeFor = n
 
     return (
         <AuthenticatedLayout user={auth.user} header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{title} Activity</h2>}>
-            <Head title="CreateActivity" />
+            <Head title={title} />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -131,6 +139,27 @@ export default function CreateActivity({ auth, title, value = null, routeFor = n
                     <img className="w-4/6 m-20" src={createActivitySvg} alt="Woman adds new activity" />
                 </div>
             </div>
+            <div>
+                        {state.success && <ToastSuccess
+                            onClose={() => {
+                                setState({
+                                    ...state,
+                                    success: false,
+                                })
+                            }}
+                        />}
+                    </div>
+                    <div>
+                        {state.error && <ToastError message={state.errorMessage}
+                            onClose={() => {
+                                setState({
+                                    ...state,
+                                    error: false,
+                                    errorMessage: '',
+                                })
+                            }}
+                        />}
+                    </div>
         </AuthenticatedLayout>
     );
 }

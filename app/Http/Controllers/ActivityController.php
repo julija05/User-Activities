@@ -75,7 +75,7 @@ class ActivityController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Activity $activity)
-    {
+    {   
         $activity->delete();
         return Redirect::route('dashboard');
     }
