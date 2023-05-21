@@ -11,6 +11,8 @@ import { formatTimeSpent } from "@/format/activity";
 import ToastSuccess from "./ToastSucess";
 import ToastError from "./ToastError";
 import SecondaryButton from "./SecondaryButton";
+import { ERROR_BOTH_DATES, ERROR_CHECK_TIME_RANGE, ERROR_DELETE_ACTIVITY, ERROR_EMAIL_INVALID, ERROR_EMAIL_REQUIRED, ERROR_FILTERING_DATA } from "@/constants/constants";
+import { CREATE_ACTIVITY_REPORT, DELETE_ACTIVITIES, USER_ACTIVITIES } from "@/constants/apiRoutes";
 
 function ActivityTable(props) {
     const { activities } = props;
@@ -30,7 +32,7 @@ function ActivityTable(props) {
 
     function chekDates(dateFrom, dateTo) {
         if (dateTo < dateFrom) {
-            errors.activiyFilterDateTo = 'Check the time range'
+            errors.activiyFilterDateTo = ERROR_CHECK_TIME_RANGE
             return errors.activiyFilterDateTo
         }
     }
@@ -39,14 +41,23 @@ function ActivityTable(props) {
     function handleFilterClick(e) {
         e.preventDefault();
         if (!data.activiyFilterDateFrom || !data.activiyFilterDateTo) {
-            return errors.activiyFilterDateFrom = 'Both dates are required'
+            return errors.activiyFilterDateFrom = ERROR_BOTH_DATES
         }
         chekDates(data.activiyFilterDateFrom, data.activiyFilterDateTo);
-        fetchActivities("/api/v1/userActivities", moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
+        fetchActivities(USER_ACTIVITIES, moment(data.activiyFilterDateFrom).format("yyyy-MM-DD"), moment(data.activiyFilterDateTo).format("yyyy-MM-DD")).then(data => {
             setState({
                 ...state,
                 activities: data,
             })
+        }).catch(error=> {
+            if (error.response && error.response.data && error.response.data.errors) {
+                setData((prevData) => ({
+                  ...prevData,
+                  errors: error.response.data.errors,
+                }));   
+              }else{
+                  console.error(ERROR_FILTERING_DATA, error);
+              }
         });
     }
 
@@ -56,7 +67,7 @@ function ActivityTable(props) {
 
     const deleteActivity = (id) => {
         try {
-          destroy(route("activities.destroy", [id]), {
+          destroy(route(DELETE_ACTIVITIES, [id]), {
             preserveScroll: true,
             onSuccess: () => {
               setState((prevState) => ({
@@ -70,8 +81,8 @@ function ActivityTable(props) {
             onFinish: () => reset(),
           });
         } catch (error) {
-          console.error("An error occurred while deleting the activity:", error);
-          errors.set("deleteActivity", "An error occurred while deleting the activity.");
+          console.error("", error);
+          errors.set("deleteActivity",ERROR_DELETE_ACTIVITY);
         }
       };
 
@@ -80,22 +91,22 @@ function ActivityTable(props) {
         setState({ ...state, error: false, errorMessage: "", success: false });
 
         if (!data.activiyFilterDateFrom || !data.activiyFilterDateTo) {
-            setState({ ...state, error: true, errorMessage: "wrong date" });
+            setState({ ...state, error: true, errorMessage: ERROR_CHECK_TIME_RANGE });
             return
         }
 
         if (!data.sendUserEmail) {
-            setState({ ...state, error: true, errorMessage: 'Email is required' });
+            setState({ ...state, error: true, errorMessage: ERROR_EMAIL_REQUIRED });
             return
         }
 
         if (!isValidEmail(data.sendUserEmail)) {
-            errors.sendUserEmail = 'Enter Valid Email'
-            setState({ ...state, error: true, errorMessage: 'Email is invalid' });
+            errors.sendUserEmail = ERROR_EMAIL_INVALID
+            setState({ ...state, error: true, errorMessage: ERROR_EMAIL_INVALID });
             return
         }
 
-        post(route('activityReport.store'), {
+        post(route(CREATE_ACTIVITY_REPORT), {
             onError: (error) => {
                 setState({ ...state, error: true, errorMessage: error });
             },
@@ -109,7 +120,7 @@ function ActivityTable(props) {
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             {!props.report &&
                 <form onSubmit={handleFilterClick}>
-                    <div class=" sm:flex sm:flex-row">
+                    <div className=" sm:flex sm:flex-row">
                         <div className="py-2 ml-1">
                             <div className="">
                                 <InputLabel htmlFor="date" value="Filter Activity From" />
